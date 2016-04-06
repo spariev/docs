@@ -1,7 +1,8 @@
 ---
+deprecated: true
 author:
   name: Stan Schwertly
-  email: sschwertly@linode.com
+  email: docs@linode.com
 description: 'Get in-depth web analytics with Piwik, a self-hosted, open source solution on Debian Lenny.'
 keywords: 'open source analytics,piwik debian,piwik,analytics,debian. tracking,statistics'
 license: '[CC BY-ND 3.0](http://creativecommons.org/licenses/by-nd/3.0/us/)'
@@ -52,9 +53,9 @@ Configure a Dedicated Virtual Host for Piwik
 
 This phase of the installation process is optional, but recommended. Here we configure a subdomain and virtual host configuration in Apache specifically for Piwik. This makes it easy to separate the statistics package from the website or websites that Piwik monitors.
 
-To create a virtual host we need to add an "[A Record](/docs/dns-guides/introduction-to-dns#a_aaaa_records)," for the subdomain that Piwik will use; in our example this is `stats.ducklington.org`. If your DNS is hosted with Linode's DNS servers, you can configure the A record in the [DNS manager](/docs/dns-guides/configuring-dns-with-the-linode-manager). Additionally, we'll need to create a new virtual hosting file for this sub domain.
+To create a virtual host we need to add an "[A Record](/docs/dns-guides/introduction-to-dns#a_aaaa_records)," for the subdomain that Piwik will use; in our example this is `stats.example.com`. If your DNS is hosted with Linode's DNS servers, you can configure the A record in the [DNS manager](/docs/dns-guides/configuring-dns-with-the-linode-manager). Additionally, we'll need to create a new virtual hosting file for this sub domain.
 
-We'll create the following host file, located at `/etc/apache2/sites-available/stats.ducklington.org`:
+We'll create the following host file, located at `/etc/apache2/sites-available/stats.example.com`:
 
 {: .file }
 /etc/apache2/sites-available/stats.example.org
@@ -115,7 +116,7 @@ When running software compiled or installed directly from sources provided by up
 Please monitor the Piwik security announcement posts, and development mailing lists to ensure that you are aware of all updates to the software and can upgrade appropriately or apply patches and recompile as needed:
 
 -   [Piwik Security Announcements](http://piwik.org/blog/category/security/)
--   [Piwik Mailing Lists](http://dev.piwik.org/trac#Mailinglists)
+-   [Piwik Mailing Lists](http://lists.piwik.org/mailman/listinfo)
 
 When upstream sources offer new releases, repeat the instructions for installing the Piwik software as needed. These practices are crucial for the ongoing security and functioning of your system.
 

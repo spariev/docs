@@ -2,7 +2,7 @@
 deprecated: true
 author:
   name: Linode
-  email: skleinman@linode.com
+  email: docs@linode.com
 description: 'The Planet feed aggregator provides an overview of a community by collecting all feeds produced by a community.'
 keywords: 'planet,blogs,aggregator,feed,rss'
 license: '[CC BY-ND 3.0](http://creativecommons.org/licenses/by-nd/3.0/us/)'
@@ -12,6 +12,9 @@ modified_by:
   name: Linode
 published: 'Tuesday, August 10th, 2010'
 title: 'Create an Aggregate Blog using Planet on Ubuntu 9.10 (Karmic)'
+external_resources:
+    - '[The Planet''s Project''s Home Page](http://www.planetplanet.org)'
+    - '[Using Cron to Schedule Tasks](/docs/linux-tools/utilities/cron)'
 ---
 
 
@@ -20,8 +23,7 @@ The Planet Feed Aggregator takes a collection of RSS feeds and generates what it
 
 Before beginning to follow this guide, we assume that you have completed the [getting started](/docs/getting-started/) guide. If you're new to Linux server administration, you may be interested in our [introduction to Linux concepts guide](/docs/tools-reference/introduction-to-linux-concepts/), [beginner's guide](/docs/beginners-guide/) and [administration basics guide](/docs/using-linux/administration-basics). Beyond this, Planet requires a web server to provide access to the resources it creates, but this document does not depend on specific [web server software](/docs/web-servers/) software.
 
-Enabling the Universe Repository
---------------------------------
+## Enabling the Universe Repository
 
 Prior to installing the Planet software, you will need to enable the `universe` repositories. Edit the `/etc/apt/sources.list` to ensure that the following lines are present:
 
@@ -43,8 +45,7 @@ Issue the following commands to update your system's package repositories and en
     apt-get update
     apt-get upgrade
 
-Install Planet Software
------------------------
+## Install Planet Software
 
 Install the Planet software by issuing the following command:
 
@@ -52,46 +53,45 @@ Install the Planet software by issuing the following command:
 
 This will install the Apache HTTP server as a dependency. Congratulations, we can now begin the configuration of Planet.
 
-Configure Planet
-----------------
+## Configure Planet
 
 ### Basic Planet Configuration
 
-For the purposes of example, this document assumes that your web server is configured to use `/srv/www/bucknell.net/public_html` as the public document root for the domain `bucknell.net`.
+For the purposes of example, this document assumes that your web server is configured to use `/srv/www/example.com/public_html` as the public document root for the domain `example.com`.
 
-Copy the default configuration file to the `/srv/www/bucknell.net` directory:
+Copy the default configuration file to the `/srv/www/example.com` directory:
 
-    cp /etc/planet.conf /srv/www/bucknell.net
+    cp /etc/planet.conf /srv/www/example.com
 
 Now edit the file, making sure to modify the following values to conform to the needs of your deployment. Consider the following example:
 
 {: .file-excerpt }
 planet.conf
 :   ~~~
-    name=Bucknell link=http://bucknell.net
+    name=example link=http://example.com
 
-    owner_name=squire <owner_email=squire@bucknell.net>
+    owner_name=username <owner_email=username@example.com>
 
-    cache_dir = /srv/www/bucknell.net/planet_cache
+    cache_dir = /srv/www/example.com/planet_cache
 
-    output_dir = /srv/www/bucknell.net/public_html
+    output_dir = /srv/www/example.com/public_html
 
     items_perpage = 40 days_per_page = 0
 
-    template_files = /srv/www/bucknell.net/planet_templates/index.html.tmpl /srv/www/bucknell.net/planet_templates/atom.xml.tmpl /srv/www/bucknell.net/planet_templates/rss20.xml.tmpl /srv/www/bucknell.net/planet_templates/rss10.xml.tmpl /srv/www/bucknell.net/planet_templates/opml.xml.tmpl /srv/www/bucknell.net/planet_templates/foafroll.xml.tmpl
+    template_files = /srv/www/example.com/planet_templates/index.html.tmpl /srv/www/example.com/planet_templates/atom.xml.tmpl /srv/www/example.com/planet_templates/rss20.xml.tmpl /srv/www/example.com/planet_templates/rss10.xml.tmpl /srv/www/example.com/planet_templates/opml.xml.tmpl /srv/www/example.com/planet_templates/foafroll.xml.tmpl
 
-    [/srv/www/bucknell.net/planet_templates/rss10.xml.tmpl] items_per_page = 30
+    [/srv/www/example.com/planet_templates/rss10.xml.tmpl] items_per_page = 30
     ~~~
 
 These settings establish the name and some background information regarding the site. The `output_dir` determines where Planet will build the site, and should point to a publicly accessible directory equivalent to or beneath the "document root" of your web server. The `items_perpage` and `days_per_page` limit the number of posts displayed on all Planet-generated pages. `items_per_page` trims the number of posts included in the feed to not surpass the threshold set. `days_per_page` sets a hard limit for the number of days of oldest possible post that can be displayed.
 
 The remaining settings control the behavior and use of templates. Issue the following commands to copy the default templates and other support files into a site specific configuration:
 
-    mkdir -p /srv/www/bucknell.net/planet_cache/
-    mkdir -p /srv/www/bucknell.net/planet_templates/
-    cp /var/lib/planet/templates/* /srv/www/bucknell.net/planet_templates/
-    cp -R /var/lib/planet/www/images/ /srv/www/bucknell.net/public_html/
-    cp /usr/share/doc/planet/examples/planet.* /srv/www/bucknell.net/public_html/
+    mkdir -p /srv/www/example.com/planet_cache/
+    mkdir -p /srv/www/example.com/planet_templates/
+    cp /var/lib/planet/templates/* /srv/www/example.com/planet_templates/
+    cp -R /var/lib/planet/www/images/ /srv/www/example.com/public_html/
+    cp /usr/share/doc/planet/examples/planet.* /srv/www/example.com/public_html/
 
 If you want to override any of the default values like the encoding or the value of `items_per_page` as seen above, simply create an item block beginning with the full path to the template and specify the values beneath. If you need planet to generate an additional template, simply add the full path to the template to the end of the `template_files` list.
 
@@ -102,8 +102,8 @@ At the end of your `planet.conf` file, add entries that resemble the following f
 {: .file-excerpt }
 planet.conf
 :   ~~~
-    [<http://library.linode.com/feeds/linode-library.xml>]
-    name = Linode Library
+    [<https://www.linode.com/docs/rss>]
+    name = Linode
     ~~~
 
 If you want to take advantage of Planet's support for per-feed "faces" or avatars to identify each feed with a distinct logo or image, consider the following examples:
@@ -113,19 +113,18 @@ planet.conf
 :   ~~~
     [DEFAULT] facewidth = 64 faceheight = 64
 
-    [<http://library.linode.com/feeds/linode-library.xml>] name = Linode Library face = lin-lib-avatar.png
+    [<https://www.linode.com/docs/rss>] name = Linode face = lin-lib-avatar.png
     ~~~
 
-You can specify default "width" and "height" in the `[DEFAULT]` directive, but these values can be overridden for feed-specific settings. All "faces" should be stored in an `images/` directory beneath the output directory. In the case of this example, deposit images into `/srv/www/bucknell.net/public_html/images/`.
+You can specify default "width" and "height" in the `[DEFAULT]` directive, but these values can be overridden for feed-specific settings. All "faces" should be stored in an `images/` directory beneath the output directory. In the case of this example, deposit images into `/srv/www/example.com/public_html/images/`.
 
 Once you have completed your modifications to `planet.conf`, run Planet for the first time by issuing the following command:
 
-    planetplanet /srv/www/bucknell.net/planet.conf
+    planetplanet /srv/www/example.com/planet.conf
 
 The Planet software will only poll the source feeds when the above command is used. Otherwise, all files generated by Planet are static. By maintaining multiple `planet.conf` files and specifying distinct output directories, it's possible to generate multiple Planet-based websites on a single server.
 
-Running Planet
---------------
+## Running Planet
 
 While you can run Planet without incident using the above method, we recommend running planet regularly using a "cronjob." Edit your crontab file with the following command:
 
@@ -136,18 +135,7 @@ Insert the following job into the crontab:
 {: .file-excerpt }
 crontab
 :   ~~~
-    */10* * * * planetplanet /srv/www/bucknell.net/planet.conf
+    */10* * * * planetplanet /srv/www/example.com/planet.conf
     ~~~
 
 Save the crontab. Your Planet generated site will refresh every 10 minutes. Congratulations!
-
-More Information
-----------------
-
-You may wish to consult the following resources for additional information on this topic. While these are provided in the hope that they will be useful, please note that we cannot vouch for the accuracy or timeliness of externally hosted materials.
-
-- [The Planet's Project's Home Page](http://www.planetplanet.org)
-- [Using Cron to Schedule Tasks](/docs/linux-tools/utilities/cron)
-
-
-

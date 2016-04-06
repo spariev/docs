@@ -1,7 +1,7 @@
 ---
 author:
   name: Stan Schwertly
-  email: sschwertly@linode.com
+  email: docs@linode.com
 description: 'Installing and configuring CakePHP for developing PHP applications on your Debian 5 (Lenny) Linux VPS.'
 keywords: 'cakephp,cakephp debian,php framework,debian,develop php'
 license: '[CC BY-ND 3.0](http://creativecommons.org/licenses/by-nd/3.0/us/)'
@@ -41,7 +41,7 @@ The transition from a development installation of CakePHP to a production instal
 /etc/apache2/sites-available/example.com
 :   ~~~ apache
     <VirtualHost *:80>
-         ServerAdmin squire@example.com
+         ServerAdmin username@example.com
          ServerName example.com
          ServerAlias www.example.com
          DocumentRoot /srv/www/example.com/public_html/cake_1_2/app/webroot/

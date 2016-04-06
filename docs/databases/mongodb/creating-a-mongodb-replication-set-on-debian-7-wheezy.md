@@ -8,19 +8,23 @@ license: '[CC BY-ND 3.0](http://creativecommons.org/licenses/by-nd/3.0/us/)'
 alias: ['databases/mongodb/debian-7/']
 modified: Wednesday, August 13, 2014
 modified_by:
-  name: Dave Russell Jr
+  name: Linode
 published: 'Wednesday, April 9th, 2014'
 title: 'Creating a MongoDB Replication Set on Debian 7 (Wheezy)'
+external_resources:
+ - '[MongoDB](http://www.mongodb.org/)'
+ - '[db.collection.insert()](http://docs.mongodb.org/manual/reference/method/db.collection.insert/)'
+ - '[Getting Started with the mongo Shell](http://docs.mongodb.org/manual/tutorial/getting-started-with-the-mongo-shell/)'
+ - '[Replication Introduction](http://docs.mongodb.org/manual/core/replication-introduction/)'
 ---
 
 MongoDB is an open-source, non-SQL database engine. MongoDB is scalable and an alternative to the standard relational database management system (RDBMS). A replication set is used for redundancy and to provide access to your data in the event of a node failure.
 
 Before installing MongoDB, it is assumed that you have followed our getting started guide. If you're new to Linux server administration, you may be interested in our [introduction to Linux concepts guide](/docs/tools-reference/introduction-to-linux-concepts/), [beginner's guide](/docs/beginners-guide/) and [administration basics guide](/docs/using-linux/administration-basics).
 
-This guide is written for a non-root user. Commands that require elevated privileges are prefixed with `sudo`. If you are not familiar with the `sudo command`, you can review our [Users and Groups](https://library.linode.com/using-linux/users-and-groups) guide.
+This guide is written for a non-root user. Commands that require elevated privileges are prefixed with `sudo`. If you are not familiar with the `sudo command`, you can review our [Users and Groups](/docs/tools-reference/linux-users-and-groups) guide.
 
-Installing MongoDB
-------------------
+## Installing MongoDB
 
 The MongoDB repository provides the latest stable release (currently mongodb-10gen). This package version (mongodb-10gen) cannot be installed with mongodb, mongodb-server, or mongodb-clients packages provided by Debian.
 
@@ -54,12 +58,11 @@ The MongoDB repository provides the latest stable release (currently mongodb-10g
 
         sudo apt-get install mongodb-10gen
 
-Configuring Networking
-----------------------
+## Configuring Networking
 
 It is imperative that the networking configurations are set and working properly, or you will not be able to add members to the replication set. This section will provide in detail how to configure three (3) Linodes as a MongoDB replication set.
 
-Before you begin, you will need to obtain all the private IP addresses for each of your Linodes. This information can be found by logging into the Linode Manager. Under the **Remote Access** tab there is a section called, "Private/LAN Network". Click on the "Add a Private IP" link to assign a private IP address to your Linode. Again, we are working with a three member replication set so you will need to acquire this information for each member.
+Before you begin, you will need to obtain all the private IP addresses for each of your Linodes. This information can be found by logging into the Linode Manager. Under the **Remote Access** tab there is a section called "Private/LAN Network." Click on the "Add a Private IP" link to assign a private IP address to your Linode. Again, we are working with a three-member replication set, so you will need to acquire this information for each member.
 
 [![Finding your private IP address.](/docs/assets/1700-private_ip-v3.png)](/docs/assets/1700-private_ip-v3.png)
 
@@ -75,7 +78,7 @@ Once you have all your private IPs, you can add them to the `hosts` file. Use yo
     192.168.180.1 mongo3
     ~~~
 
-Use your own IP addresses in place of the addresses in the above example. The names of the members in the replication set are also variables you may name them what you choose. However, it would be prudent to have some numerical or alphabetic notation as this will make it easier to identify when connecting to the different replication set members.
+Use your own IP addresses in place of the addresses in the above example. The names of the members in the replication set are also variables; you may name them what you choose. However, it would be prudent to use some numerical or alphabetic notation, as this will make identification easier when connecting to the different replication set members.
 
 {: .note }
 >
@@ -129,14 +132,13 @@ Use your own IP addresses in place of the addresses in the above example. The na
         replSet = rs1
         ~~~
 
-    In this example, the sample replication set is **rs1**, however, you may change the name as you choose.
+    In this example, the sample replication set is **rs1**; however, you may change the name as you choose.
 
-Replication Sets
-----------------
+## Replication Sets
 
 A replication set will allow your data to be "copied over" or propagated to all other members in the set. It provides redundancy in the event of system failure. It is recommended that an odd number of members be used in a set since it will make elections easier.
 
-Elections are to select which set member will become the primary. Elections take place after the replication set is initiated and when the primary is not available. The primary member is the only one that can accept write operations. In the event the primary is not available, elections take place to select a new primary. This election action allows the set to resume normal operations without manual intervention.
+Elections are used to select which set member will become the primary. Elections take place after the replication set is initiated and when the primary is not available. The primary member is the only one that can accept write operations. In the event the primary is not available, elections take place to select a new primary. This election action allows the set to resume normal operations without manual intervention.
 
 ### Creating a Replication Set
 
@@ -201,7 +203,7 @@ A `mongodb.conf` file was created during the installation. You will use this con
             ]
          }
 
-8.  Now you are ready to add additional members:
+8.  Now, you are ready to add additional members:
 
         rs.add("mongo2:27017")
 
@@ -210,7 +212,7 @@ A `mongodb.conf` file was created during the installation. You will use this con
         rs1:PRIMARY> rs.add("mongo2:27017")
         { "ok" : 1 }
 
-9.  To verify that the members have been added correctly run the `rs.conf()` command again. The output should look similar to the following:
+9.  To verify that the members have been added correctly, run the `rs.conf()` command again. The output should look similar to the following:
 
         rs.conf()
         {
@@ -254,7 +256,7 @@ The best way to verify that replication is working and the members are all commu
 
 ### Adding New Members to an Existing ReplSet
 
-Before you add a new member, its data directory must be empty. Once the new member is added it will copy over all the data from an existing member in the replication set.
+Before you add a new member, an existing RelpSet's data directory must be empty. Once the new member is added it will copy over all the data from an existing member in the replication set.
 
 Members can be added to the replication set at any time. In order to re-add a removed member or to add a totally new member, you must be connected to the primary member of the replication set. Before you issue the "add" command, you must switch to admin. At the MongoDB prompt issue the command:
 
@@ -272,8 +274,7 @@ An example of the add member process is included for your reference. Make sure t
 
 Use the `rs.conf()` command to check if the new member is present in the configuration file. In addition, any database should propagate almost immediately (depending on its size) over to the new member.
 
-Database Concepts and Commands
-------------------------------
+## Database Concepts and Commands
 
 MongoDB is different from SQL in its classification of data as well as its commands. The following sections will provide some basic commands and data descriptions.
 
@@ -282,7 +283,7 @@ MongoDB is different from SQL in its classification of data as well as its comma
 To clarify how data is stored it is important to understand how MongoDB classifies data. The data is categorized as follows:
 
 -   A database is the container for collections
--   A collection is a group of documents, it is synonymous with tables
+-   A collection is a group of documents; it is synonymous with tables
 -   A document contains basic units of data
 -   Fields are analogous to columns
 -   A key is a name (string)
@@ -311,8 +312,7 @@ To clarify how data is stored it is important to understand how MongoDB classifi
 
 It is important to note that MongoDB uses parentheses () at the end of several commands, comparable to the semicolon in SQL.
 
-MongoDB Server Service
-----------------------
+## MongoDB Server Service
 
 In the event you need to restart, stop or check the status of the MongoDB service, use the following commands:
 
@@ -321,20 +321,6 @@ In the event you need to restart, stop or check the status of the MongoDB servic
     sudo service mongodb restart
     sudo service mongodb status
 
-Other Considerations
---------------------
+## Other Considerations
 
-A replication set can only have seven (7) voting members maximum. In order to add another member to a replset with seven voting members, the eighth member will have to be added as either a non-voting member or an existing voting member will need to be removed.
-
-More Information
-----------------
-
-You may wish to consult the following resources for additional information on this topic. While these are provided in the hope that they will be useful, please note that we cannot vouch for the accuracy or timeliness of externally hosted materials.
-
-- [MongoDB](http://www.mongodb.org/)
-- [db.collection.insert()](http://docs.mongodb.org/manual/reference/method/db.collection.insert/)
-- [Getting Started with the mongo Shell](http://docs.mongodb.org/manual/tutorial/getting-started-with-the-mongo-shell/)
-- [Replication Introduction](http://docs.mongodb.org/manual/core/replication-introduction/)
-
-
-
+A replication set can only have seven (7) voting members maximum. In order to add another member to a replset with seven voting members, either the eighth member will have to be added as a non-voting member or an existing voting member will need to be removed.

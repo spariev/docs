@@ -1,22 +1,21 @@
 ---
 author:
   name: Linode
-  email: skleinman@linode.com
+  email: docs@linode.com
 description: 'Use the dig utility to perform DNS queries at the command line.'
 keywords: 'dig,dns,troubleshooting,domain names'
 license: '[CC BY-ND 3.0](http://creativecommons.org/licenses/by-nd/3.0/us/)'
 alias: ['linux-tools/common-commands/dig/']
 modified: Tuesday, May 17th, 2011
 modified_by:
-  name: Amanda Folson
+  name: Linode
 published: 'Wednesday, October 13th, 2010'
 title: Use dig to Perform Manual DNS Queries
 ---
 
 `dig` is a command line domain name system (DNS) querying utility that allows you to diagnose issues with domain name resolution.
 
-Installing Dig
---------------
+## Installing Dig
 
 `dig` is part of a collection of DNS utilities often packaged with the DNS server "BIND". You can install these utilities by issuing the appropriate command for your Linux distribution. For users of Debian and Ubuntu systems, use the following command:
 
@@ -30,8 +29,7 @@ In Arch Linux, use the following command:
 
     pacman -S dnsutils 
 
-Using Dig
----------
+## Using Dig
 
 Consider the following basic `dig` output:
 
@@ -92,7 +90,7 @@ If you attempt to query a domain that doesn't exist, as is the case with `nonext
     ;nonextant.example.com. IN    A
 
     ;; AUTHORITY SECTION:
-    example.com. 10800  IN      SOA     ns1.linode.com. squire.example.com. 2010051349 14400 14400 1209600 86400
+    example.com. 10800  IN      SOA     ns1.linode.com. username.example.com. 2010051349 14400 14400 1209600 86400
 
     ;; Query time: 91 msec
     ;; SERVER: 192.168.1.1#53(192.168.1.1)
@@ -122,8 +120,7 @@ In this example, the query returns the status `NXDOMAIN` and the `SOA` or "Start
     ;; WHEN: Tue Aug 24 14: 2010
     ;; MSG SIZE  rcvd: 57
 
-Using Dig to Trace a DNS Query
-------------------------------
+## Using Dig to Trace a DNS Query
 
 With the `+trace` option, `dig` will provide output that allows you follow each successive hierarchical step that the query takes:
 
@@ -178,8 +175,7 @@ This example traces a DNS query for the domain `www.example.com`. This ultimatel
 
 DNS traces help you determine if DNS authority has delegated properly and if DNS "glue" records are leading to an incorrect resolution. DNS traces also provide information on how long queries take to complete and the specific servers that provide intermediate records.
 
-Using Dig to Target a Specific DNS Server
------------------------------------------
+## Using Dig to Target a Specific DNS Server
 
 Any DNS server can publish records for any domain; however, in normal use, DNS servers are only queried for records that have had authority delegated to them. You can use `dig` to query arbitrary DNS servers for records that they might not have been delegated authority, as in the following example:
 
@@ -220,8 +216,7 @@ Any DNS server can publish records for any domain; however, in normal use, DNS s
 
 Specify the name of the server that you wish to query as an argument to the `dig` command formatted as `@[server]`, where `[server]` is the name or address of the IP DNS server.
 
-Using Dig to Retrieve Different Record Types
---------------------------------------------
+## Using Dig to Retrieve Different Record Types
 
 Specify a different type of DNS record by adding that record type (e.g. AAAA, MX, TXT, or SRV) to the `dig` command. Consider the following example of a query for SRV records:
 
@@ -237,15 +232,14 @@ Specify a different type of DNS record by adding that record type (e.g. AAAA, MX
     ;_jabber._tcp.example.com.      IN      SRV
 
     ;; ANSWER SECTION:
-    _jabber._tcp.example.com. 300   IN      SRV     0 0 5269 lollipop.example.com
+    _jabber._tcp.example.com. 300   IN      SRV     0 0 5269 hostname.example.com
 
     ;; Query time: 53 msec
     ;; SERVER: 192.168.1.1#53(192.168.1.1)
     ;; WHEN: Wed Aug 25 12:40:13 2010
     ;; MSG SIZE  rcvd: 90
 
-Using Dig to Generate Condensed Output
---------------------------------------
+## Using Dig to Generate Condensed Output
 
 Using the `+short` modifier after the dig command abbreviates the output of `dig`:
 
@@ -274,7 +268,7 @@ You can combine the `+short` modifier with other dig commands to generate output
     A 107.92.2.7 from server ns2.linode.com in 94 ms.
 
     $ dig soa +short example.com
-    ns1.linode.com. squire.example.com. 2010051349 14400 14400 1209600 86400
+    ns1.linode.com. username.example.com. 2010051349 14400 14400 1209600 86400
 
     $ dig @ns2.linode.com ns +short example.com
     ns5.linode.com.
@@ -282,6 +276,3 @@ You can combine the `+short` modifier with other dig commands to generate output
     ns2.linode.com.
     ns3.linode.com.
     ns4.linode.com.
-
-
-

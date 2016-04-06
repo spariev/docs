@@ -6,12 +6,17 @@ modified_by:
   name: Alex Fornuto
 categories:
  - remote-desktop
+ - chef
+ - puppet
+ - ansible
  - voip
  - cloud-storage
  - containers
  - game-servers
  - media-servers
+ - salt
  - messaging
  - development
+ - configuration-management
  - project-management
 ---

@@ -11,6 +11,11 @@ modified_by:
   name: Alex Fornuto
 published: 'Thursday, August 22nd, 2013'
 title: 'Secure Communications with OpenVPN on Ubuntu 12.04 (Precise) and Debian 7'
+external_resources:
+ - '[Official OpenVPN Documentation](http://openvpn.net/index.php/open-source/documentation/howto.html)'
+ - '[Tunnelblick OS X OpenVPN Client](http://code.google.com/p/tunnelblick/)'
+ - '[OpenVPN GUI for Windows](http://openvpn.se/)'
+ - '[Network Manager GNOME Configuration Management Tool](http://projects.gnome.org/NetworkManager/)'
 ---
 
 OpenVPN, or Open Virtual Private Network, is a tool for creating networking tunnels between and among groups of computers that are not on the same local network. This is useful if you want to remotely access services on a local network without making them publicly accessible. By integrating with OpenSSL, OpenVPN can encrypt all VPN traffic to provide a secure connection between machines.
@@ -19,10 +24,9 @@ Before installing OpenVPN, we assume that you have followed our [Getting Started
 
  {: .note }
 >
-> For many private networking tasks, we suggest that you consider the functions of the OpenSSH package which can provide easier VPN and VPN-like services. OpenSSH is also installed and configured by default on all Linodes. For example, see [Using SSHFS on Linux and MacOS X](/docs/networking/ssh-filesystems) or our guide on [Setting up an SSH Tunnel](https://library.linode.com/networking/socks-proxy) for more information. Nevertheless, if your deployment requires a more traditional VPN solution like OpenVPN, this document covers the installation and configuration of the OpenVPN software.
+> For many private networking tasks, we suggest that you consider the functions of the OpenSSH package which can provide easier VPN and VPN-like services. OpenSSH is also installed and configured by default on all Linodes. For example, see [Using SSHFS on Linux and MacOS X](/docs/networking/ssh-filesystems) or our guide on [Setting up an SSH Tunnel](/docs/networking/ssh/setting-up-an-ssh-tunnel-with-your-linode-for-safe-browsing) for more information. Nevertheless, if your deployment requires a more traditional VPN solution like OpenVPN, this document covers the installation and configuration of the OpenVPN software.
 
-How OpenVPN Works
------------------
+## How OpenVPN Works
 
 Once configured, the OpenVPN server encrypts traffic between your local computer and your Linode's local network. While all other traffic is handled in the conventional manner, the VPN allows traffic on non-public interfaces to be securely passed through your Linode. This means you can connect to the local area network in your Linode's data center. Using OpenVPN in this manner is supported by the default configuration
 
@@ -36,8 +40,7 @@ With the additional configuration we will set up at the end of this guide, all t
 >
 > Please note that only one public IP address is required to use OpenVPN
 
-Installing OpenVPN
-------------------
+## Installing OpenVPN
 
 Follow these instructions to install OpenVPN:
 
@@ -53,37 +56,37 @@ Follow these instructions to install OpenVPN:
 
         apt-get install openvpn
 
-4.  The OpenVPN package provides a set of encryption-related tools called **easy-rsa**. These scripts are located by default in the `/usr/share/doc/openvpn/examples/easy-rsa/` directory. In order for OpenVPN to function properly, these scripts should be located in the `/etc/openvpn/` directory. Copy these files with the following command:
+4.  The OpenVPN package provides a set of encryption-related tools called **easy-rsa**. In order for OpenVPN to function properly, these scripts should be located in the `/etc/openvpn/` directory. This is possible with the following command:
 
-        cp -R /usr/share/doc/openvpn/examples/easy-rsa/ /etc/openvpn
+        cd /etc/openvpn/ && make-cadir easy-rsa
 
-	Most of the relevant configuration for the OpenVPN public key infrastructure is contained in `/etc/openvpn/easy-rsa/2.0/`. We will create several files in this directory used to define the OpenVPN server and client security.
+	Most of the relevant configuration for the OpenVPN public key infrastructure is contained in `/etc/openvpn/easy-rsa/`. We will create several files in this directory used to define the OpenVPN server and client security.
 
 ### Initializing the Public Key Infrastructure (PKI)
 
 In this section, you will initialize the certificate authority and the public key infrastructure:
 
-1.  Move into the `/etc/openvpn/easy-rsa/2.0/` directory:
+1.  Move into the `/etc/openvpn/easy-rsa/` directory:
 
-        cd /etc/openvpn/easy-rsa/2.0/
+        cd /etc/openvpn/easy-rsa/
 
 2.  Create a symbolic link from `openssl-1.0.0.cnf` to `openssl.cnf`:
 
         ln -s openssl-1.0.0.cnf openssl.cnf
 
-3.  Execute the `vars` script:
+3.  Source the `vars` script:
 
-        . /etc/openvpn/easy-rsa/2.0/vars
+        source ./vars
 
-	This will return `NOTE: If you run ./clean-all, I will be doing a rm -rf on /etc/openvpn/easy-rsa/2.0/keys`
+	This will return `NOTE: If you run ./clean-all, I will be doing a rm -rf on /etc/openvpn/easy-rsa/keys`
 
 4.  Execute the `clean-all` script.
 
-        . /etc/openvpn/easy-rsa/2.0/clean-all
+        ./clean-all
 
 5.  Execute the `build-ca` script. At each prompt, fill out the information to be used in your certificate.
 
-        . /etc/openvpn/easy-rsa/2.0/build-ca
+        ./build-ca
 
 After doing this, your PKI should be configured properly.
 
@@ -93,13 +96,17 @@ With the certificate authority generated, you can generate the private key for t
 
 1.  Create the key with the following command:
 
-        . /etc/openvpn/easy-rsa/2.0/build-key-server server
+        ./build-key-server server
 
 2.  You will be prompted for additional information. Change the default values as necessary. By default, the `Common Name` for this key will be **server**. The challenge password and company names are optional and can be left blank.
 3.  When you've completed the question section, confirm the signing of the certificate and the `certificate requests certified` by answering **yes** to these questions.
 4.  With the private keys generated, create certificates for all of your VPN clients. Issue the following command:
 
-        . /etc/openvpn/easy-rsa/2.0/build-key client1
+        ./build-key client1
+
+    {:.note}
+    >
+    > Anyone with access to `client1.key` will be able to access your VPN. To better protect against this scenario, you can issue `./build-key-pass client1` instead to build a client key which is encrypted with a passphrase.
 
 5.  Repeat the previous step for each client, replacing `client1` with an appropriate identifier.
 
@@ -111,7 +118,7 @@ The **Diffie Hellman Parameters** govern the method of key exchange used by the 
 
 Issue the following command to generate the `.pem` file:
 
-    . /etc/openvpn/easy-rsa/2.0/build-dh
+    ./build-dh
 
 This should produce the following output:
 
@@ -124,7 +131,7 @@ This will be followed by a quantity of seemingly random output. Once it brings y
 
 Move all of the secure keys to their proper locations by following these instructions:
 
-1.  The `/etc/openvpn/easy-rsa/2.0/keys/` directory contains all of the keys and certificates for the server and its clients generated using the `easy-rsa` tools. Copy the following certificate and key files to the remote client machines, using **scp** or another [means of transferring](/docs/using-linux/administration-basics#how_to_upload_files_to_a_remote_server):
+1.  The `/etc/openvpn/easy-rsa/keys/` directory contains all of the keys and certificates for the server and its clients generated using the `easy-rsa` tools. Copy the following certificate and key files to the remote client machines, using **scp** or another [means of transferring](/docs/using-linux/administration-basics#how_to_upload_files_to_a_remote_server):
 
     -   `ca.crt`
     -   `client1.crt`
@@ -134,9 +141,9 @@ Move all of the secure keys to their proper locations by following these instruc
     >
     > Transfer these keys with the utmost attention to security. Anyone who has the key or is able to intercept an unencrypted copy of the key will be able to gain full access to your virtual private network. Typically we recommend that you encrypt the keys for transfer, either by using a protocol like SSH, or by encrypting them with the PGP tool.
 
-2.  On your server, change to the `/etc/openvpn/easy-rsa/2.0/keys` directory:
+2.  On your server, change to the `/etc/openvpn/easy-rsa/keys` directory:
 
-        cd /etc/openvpn/easy-rsa/2.0/keys
+        cd /etc/openvpn/easy-rsa/keys
 
 3.  Copy the keys to the `/etc/openvpn` directory of the server so the OpenVPN server process can access them:
 
@@ -148,13 +155,13 @@ Keeping control of these files is of the utmost importance to the integrity of y
 
 If you need to remove a user's access to the VPN server, follow these instructions:
 
-1.  Run the `vars` script. Note that for this script to function properly your working (current) directory must be /etc/openvpn/easy-rsa/2.0/ :
+1.  Run the `vars` script. Note that for this script to function properly your working (current) directory must be /etc/openvpn/easy-rsa/ :
 
-        . /etc/openvpn/easy-rsa/2.0/vars
+        source ./vars
 
 2.  Run the `revoke-full` script, substituting **client1** with the name of the certificate you want to revoke:
 
-        . /etc/openvpn/easy-rsa/2.0/revoke-full client1
+        ./revoke-full client1
 
 This will revoke the ability of all users using the `client1` certificate to access the VPN. Make sure you don't accidentally revoke access for someone who still needs it, and who uses that certificate.
 
@@ -162,27 +169,19 @@ This will revoke the ability of all users using the `client1` certificate to acc
 
 In this section, you'll create two important configuration files. One is for the server and defines the scope and settings for the VPN. The other is for your local computer, and defines the settings you will pass on to your VPN client. For each client connecting to the VPN you will need to generate a separate configuration file.
 
-1.  Configure your server file. There's an example file in `/usr/share/doc/openvpn/examples/sample-config-files` which you'll use as a starting point. First, move to the `/usr/share/doc/openvpn/examples/sample-config-files` directory:
+1.  Configure your server file. There's an example file in `/usr/share/doc/openvpn/examples/sample-config-files` which you'll use as a starting point. First, extract and copy the file to the `/etc/openvpn/` directory:
 
-        cd /usr/share/doc/openvpn/examples/sample-config-files
+        gunzip -c /usr/share/doc/openvpn/examples/sample-config-files/server.conf.gz >/etc/openvpn/server.conf
 
-2.  Unarchive the file:
-
-        gunzip -d server.conf.gz
-
-3.  Copy it to the `/etc/openvpn/` directory:
-
-        cp server.conf /etc/openvpn/
-
-4.  Copy the `client.conf` file to your home directory:
+2.  Copy the `client.conf` file to your home directory:
 
         cp client.conf ~/
 
-5.  Move to your home directory:
+3.  Move to your home directory:
 
-        cd ~/
+        cd ~
 
-6.  Open your `~/client.conf` file for editing, and update the `remote` line to reflect the OpenVPN server's name:
+4.  Open your `~/client.conf` file for editing, and update the `remote` line to reflect the OpenVPN server's name:
 
         nano ~/client.conf
 
@@ -196,7 +195,7 @@ In this section, you'll create two important configuration files. One is for the
         remote example.com 1194
         ~~~
 
-7.  In the same file, `client.conf`, edit the `cert` and `key` lines to reflect the name of your key. In this example we use `client1` for the file name.
+5.  In the same file, `client.conf`, edit the `cert` and `key` lines to reflect the name of your key. In this example we use `client1` for the file name.
 
     {: .file }
     ~/client.conf
@@ -212,16 +211,15 @@ In this section, you'll create two important configuration files. One is for the
         key client1.key
         ~~~
 
-8.  Copy the `~/client.conf` file to your client system.
-9.  Repeat the entire key generation and distribution process for every user and every key that will connect to your network.
-10. To start the OpenVPN server, run the following command:
+6.  Copy the `~/client.conf` file to your client system.
+7.  Repeat the entire key generation and distribution process for every user and every key that will connect to your network.
+8. To start the OpenVPN server, run the following command:
 
         service openvpn start
 
 This will scan the `/etc/openvpn` directory on the server for files with a `.conf` extension. For every file that it finds, it will create and run a VPN daemon (server).
 
-Installing Client-Side Software
--------------------------------
+## Installing Client-Side Software
 
 The process for connecting to the VPN varies depending on the specific operating system and distribution running on the *client* machine. You will need to install the right OpenVPN package for your client operating system.
 
@@ -231,7 +229,7 @@ If you use OS X on a Mac, we have found that the [Tunnelblick](http://code.googl
 
 Here we will go through installing Tunneblick on OSX:
 
-1.  To download the latest version of Tunnelblick, [click here](https://code.google.com/p/tunnelblick/wiki/DownloadsEntry#Tunnelblick_Stable_Release). After opening the dmg file you can drag it into applications or open it immediately and it will copy itself.
+1.  To download the latest version of Tunnelblick, [click here](https://tunnelblick.net/downloads.html#Tunnelblick_Stable_Release). After opening the dmg file you can drag it into applications or open it immediately and it will copy itself.
 2.  After starting, you will see this splash screen:
 
     [![Splash screen for TunnelBlick.](/docs/assets/1346-tunnelblick2)](/docs/assets/1346-tunnelblick2)
@@ -246,8 +244,7 @@ Here we will go through installing Tunneblick on OSX:
 
 4.  Tunnelblick will open a Finder window into which you can copy the client.conf and client1 ca, crt, and key files you created on the Linode and copied to this client machine. Follow the rest of the instructions shown in Tunnelblick to create and install your Tunnelblick configuration file.
 
-Connecting to the VPN
----------------------
+## Connecting to the VPN
 
 If you are using Tunnelblick, click on the tray icon to initiate the connection:
 
@@ -353,7 +350,7 @@ By deploying the following configuration, you will be able to forward *all* traf
     {: .file-excerpt }
     /etc/dnsmasq.conf
     :   ~~~
-        listen-address=127.0.0.1,10.8.0.1
+        listen-address=10.8.0.1
 
         bind-interfaces
         ~~~
@@ -408,16 +405,3 @@ By deploying the following configuration, you will be able to forward *all* traf
         reboot
 
 To test your connection, connect to the VPN connection from your local machine, then access one of the many [websites that will display your public IP address](http://www.whatismyip.com/). If the IP address displayed doesn't match the IP address of your Linode, your traffic is not being filtered through your Linode or encrypted by the VPN. If the IP matches, network traffic from your local machine is being filtered through your Linode and encrypted over the VPN, and you have successfully completed your OpenVPN setup!
-
-More Information
-----------------
-
-You may wish to consult the following resources for additional information on this topic. While these are provided in the hope that they will be useful, please note that we cannot vouch for the accuracy or timeliness of externally hosted materials.
-
-- [Official OpenVPN Documentation](http://openvpn.net/index.php/open-source/documentation/howto.html)
-- [Tunnelblick OS X OpenVPN Client](http://code.google.com/p/tunnelblick/)
-- [OpenVPN GUI for Windows](http://openvpn.se/)
-- [Network Manager GNOME Configuration Management Tool](http://projects.gnome.org/NetworkManager/)
-
-
-

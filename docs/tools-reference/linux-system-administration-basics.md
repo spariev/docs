@@ -8,15 +8,14 @@ license: '[CC BY-ND 3.0](http://creativecommons.org/licenses/by-nd/3.0/us/)'
 alias: ['using-linux/administration-basics/']
 modified: Wednesday, February 18, 2015
 modified_by:
-  name: Dave Russell
+  name: Linode
 published: 'Sunday, December 13th, 2009'
 title: Linux System Administration Basics
 ---
 
 This document presents a collection of common issues and useful tips for Linux system administration. Whether you're new to system administration or have been maintaining systems for some time, we hope these tips are helpful regardless of your background or choice in Linux distributions.
 
-Basic Configuration
--------------------
+## Basic Configuration
 
 These tips cover some of the basic steps and issues encountered during the beginning of system configuration. We provide a general [getting started guide](/docs/getting-started) for your convenience if you're new to Linode and basic Linux system administration. Additionally, you may find some of our [Introduction to Linux Concepts guide](/docs/tools-reference/introduction-to-linux-concepts) useful.
 
@@ -66,7 +65,7 @@ Some applications require that the machine properly identify itself in the `/etc
 {: .file-excerpt }
 /etc/hosts
 :   ~~~
-    127.0.0.1 localhost.localdomain localhost 12.34.56.78 squire.example.com squire
+    127.0.0.1 localhost.localdomain localhost 12.34.56.78 username.example.com username
     ~~~
 
 You can specify a number of hostnames on each line separated by spaces. Every line must begin with one and only one IP address. In this case, replace `12.34.56.78` with your machine's IP address. Let us consider a few additional `/etc/hosts` entries:
@@ -81,8 +80,7 @@ In this example, all requests for the test.com" hostname or domain will resolve 
 
 The second entry tells the system to look to `192.168.1.1` for the domain `stick.example.com`. These kinds of host entries are useful for using "private" or "back channel" networks to access other servers in a cluster without needing to access the public network.
 
-Network Diagnostics
--------------------
+## Network Diagnostics
 
 The following tips address the basic usage and functionality of a number of tools that you can use to assess and diagnose network problems. If you suspect connectivity issues, including output of the relevant commands in your [support ticket](/docs/platform/support) can help our staff diagnose your issue. This is particularly helpful in cases where networking issues are intermittent.
 
@@ -142,7 +140,7 @@ The "mtr" command, like the [traceroute](#using_the_traceroute_command) tool, pr
 
 Here is the example output of an `mtr` command:
 
-    HOST: squire.example.com  Loss%   Snt   Last   Avg  Best  Wrst StDev
+    HOST: username.example.com  Loss%   Snt   Last   Avg  Best  Wrst StDev
         1.  256.129.75.4 0.0% 10 0.4 0.4 0.3 0.6 0.1
         2.  vlan804.tbr2.mmu.nac.net 0.0% 10 0.3 0.4 0.3 0.7 0.1
         3.  0.e1-1.tbr2.tl9.nac.net 0.0% 10 4.3 4.4 1.3 11.4 4.1
@@ -155,8 +153,7 @@ Here is the example output of an `mtr` command:
 
 Used without the `--report` flag, `mtr` tracks the speed of the connection in real time until you exit the program. Additionally, be aware that `mtr` will pause for a few moments before generating output. For more information regarding `mtr` consider our [guide to diagnosing network issues with mtr](/docs/linux-tools/mtr).
 
-System Diagnostics
-------------------
+## System Diagnostics
 
 If you're having an issue with your Linode that is neither related to [networking](#network_diagnostics), nor another easily diagnosable application issue, it is worthwhile to rule out "hardware" and operating system level issues. Use the following tools to better diagnose and resolve these kinds of issues.
 
@@ -237,8 +234,7 @@ You can quit at any time by pressing the `F10` or `Q` keys. There are a couple o
 -   The default configuration of `htop` presents all application threads as independent processes, which is non-intuitive. You can disable this by selecting the "setup" option with `F2`, then "Display Options," and then toggling the "Hide userland threads" option.
 -   You can toggle a "Tree" view with the `F5` key that usefully displays the processes in a hierarchy and shows which processes were spawned by which other processes. This is helpful in diagnosing a problem when you're having trouble figuring out what processes are what.
 
-File System Management
-----------------------
+## File System Management
 
 Historically, web developers and editors have used the FTP protocol to transfer and manage files on a remote system. FTP, however, is very insecure and inefficient for managing the files on a system when you have SSH access.
 
@@ -250,11 +246,11 @@ As always, if you are giving other users access to upload files to your server, 
 
 If you're used to using an FTP client, OpenSSH (which is included and active with all of the Linode provided installation templates) allows you to use an FTP-like interface over the SSH protocol. Known as "SFTP," many clients support this protocol, including: "[WinSCP](/docs/networking/file-transfer/transfer-files-winscp)" for Windows, "[Cyberduck](/docs/networking/file-transfer/transfer-files-cyberduck)" for Mac OS X, and "[Filezilla](/docs/networking/file-transfer/transfer-files-filezilla-ubuntu-9.10)" for Linux, OS X, and Windows desktops.
 
-If you are accustomed to FTP, SFTP is great option. Do note that by default, whatever access a user has to a file system at the command line, they will also have over SFTP. Consider [file permissions](/docs/using-linux/users-and-groups) very carefully.
+If you are accustomed to FTP, SFTP is great option. Do note that by default, whatever access a user has to a file system at the command line, they will also have over SFTP. Consider [file permissions](/docs/tools-reference/linux-users-and-groups) very carefully.
 
 Conversely, you can use Unix utilities including `scp` and [rsync](/docs/linux-tools/utilities/rsync) to securely transfer files to your Linode. On local machine, a command to copy `team-info.tar.gz` would look like:
 
-    scp team-info.tar.gz squire@lollipop.example.com:/home/squire/backups/
+    scp team-info.tar.gz username@hostname.example.com:/home/username/backups/
 
 The command, `scp`, is followed by the name of the file on the local file system to be transferred. Next is the username and hostname of the remote machine, separated by an "at" sign (e.g. `@`). Following the hostname, there is a colon (e.g. `:`) and the path on the remote server where the file should be uploaded to. Taken another way, this command would be:
 
@@ -266,7 +262,7 @@ The syntax of `scp` follows the form `scp [source] [destination]`. You can copy 
 
 ### How to Protect Files on a Remote Server
 
-Because Linode servers are network accessible and often have a number of distinct users, maintaining the security of files is often an important concern. We recommend you familiarize yourself with our [basic security guide](/docs/security/basics). Furthermore, our documentation of [access control with user accounts and permissions](/docs/using-linux/users-and-groups) may provide additional insight.
+Because Linode servers are network accessible and often have a number of distinct users, maintaining the security of files is often an important concern. We recommend you familiarize yourself with our [basic security guide](/docs/security/basics). Furthermore, our documentation of [access control with user accounts and permissions](/docs/tools-reference/linux-users-and-groups) may provide additional insight.
 
 Additionally, we suggest the following best practices for maintaining security:
 
@@ -280,7 +276,7 @@ Additionally, we suggest the following best practices for maintaining security:
 
 To create a symbolic link, issue a command in the following format:
 
-    ln -s /home/squire/config-git/etc-hosts /etc/hosts
+    ln -s /home/username/config-git/etc-hosts /etc/hosts
 
 This creates a link of the file `etc-hosts` at the location of the system's `/etc/hosts` file. More generically. this command would read:
 
@@ -299,15 +295,15 @@ If you're new to using Linux and manipulating files on the terminal interface we
 
 To **copy** files, issue the following command:
 
-    cp /home/squire/todo.txt /home/squire/archive/todo.01.txt
+    cp /home/username/todo.txt /home/username/archive/todo.01.txt
 
 This copies `todo.txt` to an archive folder, and adds a number to the file name. If you want to recursively copy all of the files and subdirectories in a directory to another directory, use the `-R` option. This command looks like:
 
-    cp -R /home/squire/archive/ /srv/backup/squire.01/
+    cp -R /home/username/archive/ /srv/backup/username.01/
 
 If you need to **move** a file or directory, use the following command:
 
-    mv /home/squire/archive/ /srv/backup/squire.02/
+    mv /home/username/archive/ /srv/backup/username.02/
 
 You can also use the `mv` command to rename a file.
 
@@ -319,8 +315,7 @@ This will delete the `scratch.txt` file from the current directory.
 
 For more information about file system navigation and manipulation, please consider our documentation of [file system navigation](/docs/using-linux/using-the-terminal#file_system_navigation) in the [using the terminal](/docs/using-linux/using-the-terminal) document.
 
-Package Management
-------------------
+## Package Management
 
 Contemporary Linux systems use package management tools to facilitate the installation and maintenance of all software on your system. For more in-depth coverage of this topic, please reference our [package management](/docs/using-linux/package-management) guide.
 
@@ -498,8 +493,7 @@ will return the same list as the plain `apt-cache search python` but the results
 
 You can append `| grep "[string]"` to any of these commands to filter package search results, or `| less` to display the results in the `less` pager, regardless of distribution.
 
-Text Manipulation
------------------
+## Text Manipulation
 
 Among Linux and UNIX-like systems, nearly all system configuration information is stored and manipulated in plain text form. These tips provide some basic information regarding the manipulation of text files on your system.
 
@@ -509,7 +503,7 @@ The `grep` tool allows you to search a stream of text, such as a file or the out
 
 To use the `grep` tool, issue a command in the following format:
 
-    grep "^Subject:.*HELP.*" /home/squire/mbox
+    grep "^Subject:.*HELP.*" /home/username/mbox
 
 This will search the mail spool for subject lines (i.e. begins with the word "Subject:"), beginning with any number of characters, containing the word "help" in upper case, and followed by any number of additional characters. `grep` would then print these results on the terminal.
 
@@ -523,9 +517,9 @@ This will find and match against every occurrence of the word "morris," while ig
 
 You can use `grep` to filter the results of another command that sends output to standard out (e.g. `stdout`). This is accomplished by "piping" the output of one command "into `grep`." For instance:
 
-    ls /home/squire/data | grep "1257"
+    ls /home/username/data | grep "1257"
 
-In this example, we assume that the `/home/squire/data` directory contains a large number of files that have a UNIX time stamp in their file name. The above command will filter the output to only display those tiles that have the four digits "1257" in their file name. Note, in these cases `grep` only filters the output of `ls` and does not look into file contents. For more information regarding `grep` consider the full documentation of the [grep command](/docs/tools-reference/search-and-filter-text-with-grep).
+In this example, we assume that the `/home/username/data` directory contains a large number of files that have a UNIX time stamp in their file name. The above command will filter the output to only display those tiles that have the four digits "1257" in their file name. Note, in these cases `grep` only filters the output of `ls` and does not look into file contents. For more information regarding `grep` consider the full documentation of the [grep command](/docs/tools-reference/search-and-filter-text-with-grep).
 
 ### How to Search and Replace Across a Group of Files
 
@@ -557,7 +551,7 @@ Once again, `sed` is a very powerful and useful tool; however, if you are unfami
 
 ### How to Edit Text Interactively
 
-In many Linode Library documents, you may be instructed to edit the contents of a file. To do this, you need to use a text editor. Most of the distribution templates that Linode provides come with an implementation of the vi/vim text editor and the nano text editor. These are small, lightweight, and very powerful text editors that allow you manipulate the text of a file from the terminal environment.
+In many Linode documents, you may be instructed to edit the contents of a file. To do this, you need to use a text editor. Most of the distribution templates that Linode provides come with an implementation of the vi/vim text editor and the nano text editor. These are small, lightweight, and very powerful text editors that allow you manipulate the text of a file from the terminal environment.
 
 There are other options for text editors, notably emacs and "zile." Feel free to install these programs using your operating system's package manager. Make sure you [search your package database](#how_to_discover_package_names_and_information) so that you can install a version compiled without GUI components (i.e. X11).
 
@@ -574,16 +568,15 @@ Since vi and vim are modal editors, their operation is a bit more complex. After
 
 This provides only the most basic outline of how to use these text editors, and there are numerous external resources which will provide a more thorough introduction for more advanced use of this software.
 
-Web Servers and HTTP Issues
----------------------------
+## Web Servers and HTTP Issues
 
-Linodes do not come with any particular web server installed by default. You have the choice and power to install and configure your web server as you see fit. This allows you to deploy a configuration in a way that makes sense for your application and desired use case. The [Linode Library](/) contains a number of documents regarding the installation and maintenance of various [web servers](/docs/web-servers/).
+Linodes do not come with any particular web server installed by default. You have the choice and power to install and configure your web server as you see fit. This allows you to deploy a configuration in a way that makes sense for your application and desired use case. [Linode Guides & Tutorials](/) contains a number of documents regarding the installation and maintenance of various [web servers](/docs/web-servers/).
 
 The following tips cover a number of basic web serving tasks and functions, as well as some guidance for users new to the world of web servers.
 
 ### How to Serve Websites
 
-Web servers work by listening on a TCP port, typically port 80 for "http" and port 443 for "https." When a visitor makes a request for content, the servers respond by delivering the resource requested. Typically resources are specified with a URL that contains the protocol, `http` or `https`; a colon and two slashes, `://`; hostname or domain, `www.example.com` or `squire.example.com`; and the path to a file, `/images/avatar.jpg,` or `index.html`. Thus a full URL would resemble: `http://www.example.com/images/avatar.jpg`.
+Web servers work by listening on a TCP port, typically port 80 for "http" and port 443 for "https." When a visitor makes a request for content, the servers respond by delivering the resource requested. Typically resources are specified with a URL that contains the protocol, `http` or `https`; a colon and two slashes, `://`; hostname or domain, `www.example.com` or `username.example.com`; and the path to a file, `/images/avatar.jpg,` or `index.html`. Thus a full URL would resemble: `http://www.example.com/images/avatar.jpg`.
 
 In order to provide these resources to connected users, your Linode needs to be running a web server. There are multiple different HTTP servers and countless configurations to provide support for various web development frameworks. The three most popular general use web servers are the [Apache HTTP](/docs/web-servers/apache) server, [Lighttpd server](/docs/web-servers/lighttpd) ("Lighty"), and [nginx server](/docs/web-servers/) ("Engine X"). Each server has its strengths and weaknesses, and your choice depends largely on your experience and the nature of your needs.
 
@@ -619,7 +612,7 @@ Apache Virtual Host Configuration
     ErrorLog /srv/www/example.com/logs/error.log CustomLog /srv/www/example.com/logs/access.log combined
     ~~~
 
-Where `bucknell.net` represents the name of your virtual host, and the location of relevant files. These configuration directives make Apache create two log files that contain logging information specific to that virtual host. This allows you to easily troubleshoot errors on specific virtual hosts. To track or tail the error log, issue the following command:
+Where `example.com` represents the name of your virtual host, and the location of relevant files. These configuration directives make Apache create two log files that contain logging information specific to that virtual host. This allows you to easily troubleshoot errors on specific virtual hosts. To track or tail the error log, issue the following command:
 
     tail -F /srv/www/example.com/logs/error.log
 
@@ -630,8 +623,7 @@ This will allow you to see new error messages as they appear. Often problems can
 -   Configuration errors.
 -   Dynamic code execution or interpretation errors.
 
-DNS Servers and Domain Names
-----------------------------
+## DNS Servers and Domain Names
 
 The *Domain Name System*, or DNS, is the service that the Internet uses to associate the hard to remember and manage IP addresses with more human-usable domain names. These tips address several specific DNS related tasks. To learn more about DNS consider our [overview of the domain name system](/docs/dns-guides/introduction-to-dns). If you are familiar with DNS and just need to figure out how to set up your DNS server, consider our documentation of the [Linode DNS manager](/docs/dns-guides/configuring-dns-with-the-linode-manager).
 
@@ -655,8 +647,7 @@ In order for your server to respond to requests for this domain, you must set up
 
 Once configured, subdomains function identically to first-level domains on your server in almost all respects. If you need to, you can set up HTTP redirection for the new sub domain.
 
-SMTP Servers and Email Issues
------------------------------
+## SMTP Servers and Email Issues
 
 We provide a number of guides that cover [email-related issues](/docs/email/). The following tips attempt to further demystify email management.
 
@@ -701,12 +692,9 @@ Use the command `type msmtp`, to find the location of `msmtp` on your system. Ty
 {: .file-excerpt }
 .msmtprc example
 :   ~~~
-    account default host smtp.example.com from <squire@example.com> auth on user squire password s3cr37 tls on tls\_certcheck off port 587
+    account default host smtp.example.com from <username@example.com> auth on user username password s3cr37 tls on tls\_certcheck off port 587
     ~~~
 
 The `.msmptrc` file needs to be set to mode 600, and owned by the user account that will be sending mail. If the configuration file is located at `/srv/smtp/msmtprc`, you can call mstmp with the following command:
 
     /usr/bin/msmtp --file=/srv/smtp/msmtprc
-
-
-

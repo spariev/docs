@@ -1,7 +1,7 @@
 ---
 author:
   name: Linode
-  email: skleinman@linode.com
+  email: docs@linode.com
 description: 'Use the utilities killall and kill to manage processes on Linux systems.'
 keywords: 'kill,killall,processes,linux,process management,common linux commands'
 license: '[CC BY-ND 3.0](http://creativecommons.org/licenses/by-nd/3.0/us/)'
@@ -15,8 +15,7 @@ title: Manage Processes with killall and kill
 
 `killall` is a tool for ending running processes on your system based on name. In contrast, `kill` terminates processes based on process ID number or "PID." `kill` and `killall` can also send specific system signals to processes. Use `killall` and `kill` in conjunction with tools including `ps` to manage processes and end processes that have become stuck or unresponsive when necessary.
 
-Usage
------
+## Usage
 
 ### killall
 
@@ -96,15 +95,14 @@ If you need to convert a signal name into a signal number, or a signal number in
     $ kill -l kill
     9 
 
-Finding Running Processes
--------------------------
+## Finding Running Processes
 
 You may use a utility like htop \</using-linux/administration-basics\#monitor\_processes\_\_memory\_\_and\_cpu\_usage\_with\_htop\> 
 or top\` to view a real time list of process and their consumption of system resources. You may also use the `ps` command to view processes that are currently running and their PIDs.
 
     $ ps aux | grep "emacs" 
-    squire  3896  0.0  2.2  56600 44468 ?        Ss   Sep30   4:29 emacs
-    squire 22843  0.0  0.0   3900   840 pts/11   S+   08:49   0:00 grep emacs
+    username  3896  0.0  2.2  56600 44468 ?        Ss   Sep30   4:29 emacs
+    username 22843  0.0  0.0   3900   840 pts/11   S+   08:49   0:00 grep emacs
 
 This command filters the list of all processes that are currently running for the string `emacs` using [grep](/docs/tools-reference/search-and-filter-text-with-grep). The number listed in the second column is the PID, which is `3896` in the case of the `emacs` process. The `grep` process will always match itself for a simple search, as in the second result. To view a hierarchical tree of all running processes, issue the following command:
 
@@ -112,8 +110,7 @@ This command filters the list of all processes that are currently running for th
 
 Once you have obtained the PID or process name, use `killall` or `kill` to terminate the process as above.
 
-Verifying Process Termination
------------------------------
+## Verifying Process Termination
 
 The `-w` option to the `killall` command causes `killall` to wait until the process terminates before exiting. Consider the following command:
 
@@ -123,6 +120,3 @@ This command issues the `SIGTERM` system signal to the process with a name that 
 
     $ killall -w irssi
     irssi: no process found
-
-
-

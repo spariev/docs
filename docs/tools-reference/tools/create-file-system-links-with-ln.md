@@ -1,7 +1,7 @@
 ---
 author:
   name: Linode
-  email: skleinman@linode.com
+  email: docs@linode.com
 description: 'Create hard and symbolic links with ln on Linux Systems.'
 keywords: 'linux,common commands,unix,command line,file systems'
 license: '[CC BY-ND 3.0](http://creativecommons.org/licenses/by-nd/3.0/us/)'
@@ -15,8 +15,7 @@ title: Create File System Links with ln
 
 The `ln` command creates "meta objects" in the file system that link to other objects located on the file system. Links may point to files, directories, or other links. Although improper use can lead to disorganization and confusion, links are useful for providing access to files and file system organization.
 
-File System Linking
--------------------
+## File System Linking
 
 ### The ln Command
 
@@ -30,7 +29,7 @@ This creates a link, named `example.com` in the current directory to the directo
 
 If you want to create a symbolic link in a directory other than your current directory, you can specify a full path in the final argument of the command:
 
-    ln -s /srv/www/example.com/public_html /home/squire/public/example
+    ln -s /srv/www/example.com/public_html /home/username/public/example
 
 ### Symbolic and Hard Links
 
@@ -50,8 +49,7 @@ If you want to save all of your custom configuration options in a version contro
 
 Symbolic links can be moved, renamed, and removed at any time. When a link is created with a relative path specified and the link is later moved, the target of the link is also expected to move. If it doesn't, the link will point to an object that doesn't exist. This can lead to potential security flaws if a symbolic link is copied or transferred to a different system, or if the link object is moved and the "target" is replaced with malicious content. Be wary of potential issues that this may create.
 
-Examples
---------
+## Examples
 
 ### Create Symbolic Links with Relative Paths
 
@@ -59,21 +57,21 @@ Consider the output of the following sequence of commands, which creates and dis
 
     $ ls -l
     total 0
-    -rw-r--r-- 1 squire squire 0 Aug 27 10:35 foo
+    -rw-r--r-- 1 username username 0 Aug 27 10:35 foo
 
     $ ln -s foo bar
 
     $ ls -l
     total 0
-    lrwxrwxrwx 1 squire squire 3 Aug 27 10:35 bar -> foo
-    -rw-r--r-- 1 squire squire 0 Aug 27 10:35 fooh
+    lrwxrwxrwx 1 username username 3 Aug 27 10:35 bar -> foo
+    -rw-r--r-- 1 username username 0 Aug 27 10:35 fooh
 
 The first column of meta data on the `bar` object is `l`, which indicates that `bar` is a link. Additionally, `ls` prints the location of the symbolic link. The above link is relative: `bar` is linked to the object `foo` in the same directory. Consider the following relative link:
 
     $ ln -s ../example.txt
 
     $ ls -l 
-    lrwxrwxrwx 1 squire squire 6 Aug 27 10:54 example.txt -> ../example.txt
+    lrwxrwxrwx 1 username username 6 Aug 27 10:54 example.txt -> ../example.txt
 
 The `ln -s` command will succeed as long as a there are no files in the target directory that would conflict with the name of the link to be created. While the target file must exist when the link is created, the link or the target may be moved resulting in a broken link.
 
@@ -81,16 +79,16 @@ The `ln -s` command will succeed as long as a there are no files in the target d
 
 To avoid the pitfalls of specifying relative symbolic link targets, you may create symbolic links that point to absolute paths. Consider the following example:
 
-    $ ln -s /srv/www/example.com/public_html /home/squire/public
+    $ ln -s /srv/www/example.com/public_html /home/username/public
 
-    $ ls -l /home/squire 
+    $ ls -l /home/username 
     total 0
-    lrwxrwxrwx 1 squire squire 3 Aug 27 11:43 public -> /srv/www/example.com/public_html
+    lrwxrwxrwx 1 username username 3 Aug 27 11:43 public -> /srv/www/example.com/public_html
 
-    $ ls -l /home/squire/public 
+    $ ls -l /home/username/public 
     total 48K
-    -rw-r--r-- 1 squire squire 355 2010-06-10 14:50 index.htm
-    -rw-r--r-- 1 squire squire 38K 2010-06-10 12:37 logo.png
+    -rw-r--r-- 1 username username 355 2010-06-10 14:50 index.htm
+    -rw-r--r-- 1 username username 38K 2010-06-10 12:37 logo.png
 
 ### Create a Hard Link
 
@@ -98,21 +96,18 @@ In most cases, symbolic links are preferable over hard links. There are some sit
 
     $ ls -l 
     total 4.0K 
-    -rw-r--r-- 1 squire squire 3 Aug 27 12:23 foo
+    -rw-r--r-- 1 username username 3 Aug 27 12:23 foo
     
     $ ln foo bar
     
     $ ls -l
     total 8.0K
-    -rw-r--r-- 2 squire squire 3 Aug 27 12:23 bar 
-    -rw-r--r-- 2 squire squire 3 Aug 27 12:23 foo
+    -rw-r--r-- 2 username username 3 Aug 27 12:23 bar 
+    -rw-r--r-- 2 username username 3 Aug 27 12:23 foo
     
     $ touch foo
     
     $ ls -l
     total 8.0K 
-    -rw-r--r-- 2 squire squire 3 Aug 27 12:24 bar 
-    -rw-r--r-- 2 squire squire 3 Aug 27 12:24 foo
-
-
-
+    -rw-r--r-- 2 username username 3 Aug 27 12:24 bar 
+    -rw-r--r-- 2 username username 3 Aug 27 12:24 foo

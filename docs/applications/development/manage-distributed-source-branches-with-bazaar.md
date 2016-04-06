@@ -1,7 +1,7 @@
 ---
 author:
   name: Linode
-  email: skleinman@linode.com
+  email: docs@linode.com
 description: 'Using the Bazaar version management system.'
 keywords: 'bzr,bazaar,vcs,scm,dcvs'
 license: '[CC BY-ND 3.0](http://creativecommons.org/licenses/by-nd/3.0/us/)'
@@ -11,6 +11,9 @@ modified_by:
   name: Amanda Folson
 published: 'Monday, January 18th, 2010'
 title: Manage Distributed Source Branches with Bazaar
+external_resources:
+ - '[The Bazaar Project](http://bazaar.canonical.com/en/)'
+ - '[Official Bazaar User Documentation](http://doc.bazaar.canonical.com/latest/en/user-guide/)'
 ---
 
 Bazaar is a distributed version control system similar to [git](/docs/linux-tools/version-control/git). Bazaar allows developers to track the progress of source code and collaborate on a single object of work without depending on a centralized server to coordinate their activity. Unlike git, Bazaar's interface will be familiar to users of a centralized version control system like [Subversion](/docs/linux-tools/version-control/svn).
@@ -19,8 +22,7 @@ Like all distributed version control systems, Bazaar can work "offline," and doe
 
 This document provides an introduction to all aspects of the Bazaar version control system: beginning with the installation of Bazaar, moving through several standard Bazaar-based workflows and concluding with a review of common Bazaar commands. However, before we begin discussing the use and operating of Bazaar we assume that you have followed our [getting started guide](/docs/getting-started/). If you're new to Linux server administration you may be interested in our [introduction to Linux concepts guide](/docs/tools-reference/introduction-to-linux-concepts), the [beginner's guide](/docs/beginners-guide/) and [administration basics guide](/docs/using-linux/administration-basics).
 
-Installing Bazaar
------------------
+## Installing Bazaar
 
 Make sure your package repositories and installed programs are up to date by issuing the following commands:
 
@@ -54,8 +56,7 @@ To install Bazaar on Arch Linux systems, issue the following command:
 
 The Bazaar developers also provide application builds for [Windows](http://wiki.bazaar.canonical.com/WindowsDownloads) and [Mac OS X](http://wiki.bazaar.canonical.com/MacOSXDownloads) that include all of the software necessary for running Bazaar. Additionally these application contain a number of GUI tools for manipulating projects managed with Bazaar. You can learn more about [3rd party tools](http://wiki.bazaar.canonical.com/3rdPartyTools) for using Bazaar on the upstream wiki.
 
-Using Bazaar to Manage Projects
--------------------------------
+## Using Bazaar to Manage Projects
 
 This section covers many common operations and tasks that you may encounter during typical Bazaar usage. This will guide you through common Bazaar workflows: beginning with branch creation creating a branch, continuing with creating commits to that branch and an overview of common usage scenarios, and finally concluding with branch publication. Consider the following section for a more direct guide to individual [Bazaar commands](#common_bazaar_commands).
 
@@ -97,7 +98,7 @@ To see Bazaar's log of your commit issue the `bzr log` command. The output will 
     $ bzr log
     ------------------------------------------------------------
     revno: 1
-    committer: squire <squire@example.com>
+    committer: username <username@example.com>
     branch nick: caper
     timestamp: Fri 2010-01-08 21:45:31 +0000
     message:
@@ -119,11 +120,11 @@ This creates a file named `new-feature.r20.patch` that you can distribute to you
 
 Bazaar also includes the ability to use more "centralized" workflows, which allows contributors to a project to have a single shared repository that the entire team can use to publish changes. Shared repositories allow for a more fluid method of sharing changes between developers making it feasible for team members to always have the most up to date iteration of a document, without impacting individual workflows. To create a shared remote Bazaar project issue a command in the following form:
 
-    bzr init-repo --no-trees sftp://squire@example.com/srv/bzr/morris-shared
+    bzr init-repo --no-trees sftp://username@example.com/srv/bzr/morris-shared
 
-In this command, the `init-repo` command with the `--no-trees` option, creates a new empty repository on the remote machine without a working copy. In this example `squire` would be replaced with your username, `example.com` would correspond with the domain name of your server, and `/svn/bzr/morris-shared` would be the path for the new repository on the remote server. To publish changes to the remote repository issue the following command:
+In this command, the `init-repo` command with the `--no-trees` option, creates a new empty repository on the remote machine without a working copy. In this example `username` would be replaced with your username, `example.com` would correspond with the domain name of your server, and `/svn/bzr/morris-shared` would be the path for the new repository on the remote server. To publish changes to the remote repository issue the following command:
 
-    bzr push sftp://squire@example.com/srv/bzr/morris-shared
+    bzr push sftp://username@example.com/srv/bzr/morris-shared
 
 The `push` command sends local updates to the remote Bazaar project. If the remote project *does* have a working copy (i.e. it was created without the `--no-trees` option.), `push` will not update the working copy of the receiving project. Bazaar uses the `sftp` protocol, which is included by default with OpenSSH and is in turn active by default on all Linode systems. If your repository does not have a default remote, Bazaar will set the first location that you successfully push to as the default. Append the option `--remember` to `push` operations change the default remote location of your local repository.
 
@@ -131,7 +132,7 @@ Once published you can allow others to create local branches from this centraliz
 
     bzr branch sftp://fore@example.com/srv/bzr/morris-shared
 
-In this case, your system will need a user account for the user `fore` and additional user accounts for whatever users that require access to your project. Be sure to deploy [user groups and permissions](/docs/using-linux/users-and-groups) with prudence. You can also offer read only access to a Bazaar repository over HTTP by configuring a [web-server](/docs/web-servers) to provide access to the Bazaar project. Simply alter the branch command to resemble the following, depending on your web server configuration:
+In this case, your system will need a user account for the user `fore` and additional user accounts for whatever users that require access to your project. Be sure to deploy [user groups and permissions](/docs/tools-reference/linux-users-and-groups) with prudence. You can also offer read only access to a Bazaar repository over HTTP by configuring a [web-server](/docs/web-servers) to provide access to the Bazaar project. Simply alter the branch command to resemble the following, depending on your web server configuration:
 
     bzr branch http://bzr.example.com/morris-shared
 
@@ -155,8 +156,7 @@ At this point, the basic workflow repeats through a sequence of `pull`, `commit`
 
 In this example, `-r42` tells Bazaar to revert to revision number 42. If you only want to revert a single file or group of files, you can append these files as arguments at the end of the revert command. See below for a more comprehensive list of commands.
 
-Common Bazaar Commands
-----------------------
+## Common Bazaar Commands
 
 The following list of commands provides an outline of common Bazaar operations including the commands used above:
 
@@ -175,14 +175,3 @@ The following list of commands provides an outline of common Bazaar operations i
 -   `bzr push` performs the equivalent of a `bzr update` on the remote mirror of the branch. This does not update the working copy of that branch.
 -   `bzr uncommit` "rewinds" the branch to the last commit, but does not alter any of the files in the working copy. Use this option to change commit messages or collapse a series of commits into a single change set. Specify the `--revision=[revision-number]` option to rewind the branch to an arbitrary commit.
 -   `bzr revert [file]` takes the specified file and reverts the contents of that file to the previous version of the file as contained in the previous commit. Specify the `--revision=[revision-number]` option to revert a file to an arbitrary commit. Bazaar will backup reverted changes unless the `--no-backup` option is used.
-
-More Information
-----------------
-
-You may wish to consult the following resources for additional information on this topic. While these are provided in the hope that they will be useful, please note that we cannot vouch for the accuracy or timeliness of externally hosted materials.
-
-- [The Bazaar Project](http://bazaar.canonical.com/en/)
-- [Official Bazaar User Documentation](http://doc.bazaar.canonical.com/latest/en/user-guide/)
-
-
-

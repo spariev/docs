@@ -2,7 +2,7 @@
 deprecated: true
 author:
   name: Linode
-  email: skleinman@linode.com
+  email: docs@linode.com
 description: 'Use OpenVPN to securely connect separate networks on a Debian 5 (Lenny) Linux VPS.'
 keywords: 'openvpn,networking,vpn,debian,lenny'
 license: '[CC BY-ND 3.0](http://creativecommons.org/licenses/by-nd/3.0/us/)'
@@ -51,7 +51,7 @@ Before you can generate the public key infrastructure for OpenVPN, you must conf
     export KEY_PROVINCE="OH"
     export KEY_CITY="Oxford"
     export KEY_ORG="My Company"
-    export KEY_EMAIL="squire@example.com"
+    export KEY_EMAIL="username@example.com"
     ~~~
 
 Alter the examples to reflect your configuration. This information will be included in certificates you create and it is important that the information be accurate, particularly the `KEY_ORG` and `KEY_EMAIL` values.

@@ -1,4 +1,5 @@
 ---
+deprecated: true
 author:
   name: Amanda Folson
   email: docs@linode.com
@@ -72,7 +73,7 @@ Installing fail2ban is entirely optional, however ISPConfig can manage this serv
 
     apt-get install fail2ban
 
-More information regarding fail2ban can be found in our [fail2ban guide](/docs/security/fail2ban).
+More information regarding fail2ban can be found in our [fail2ban guide](/docs/security/using-fail2ban-for-security).
 
 Installing ISPConfig
 --------------------
@@ -99,9 +100,8 @@ Monitor for Software Updates and Security Notices
 
 When running software compiled or installed directly from sources provided by upstream developers, you are responsible for monitoring updates, bug fixes, and security issues. After becoming aware of releases and potential issues, update your software to resolve flaws and prevent possible system compromise. Monitoring releases and maintaining up to date versions of all software is crucial for the security and integrity of a system.
 
-Please monitor the ISPConfig Newsletter and project forums to ensure that you are aware of all updates to the software and can upgrade appropriately or apply patches and recompile as needed:
+Please monitor the ISPConfig project forums to ensure that you are aware of all updates to the software and can upgrade appropriately or apply patches and recompile as needed:
 
--   [ISPConfig Newsletter](http://newsletter.howtoforge.com/ispconfig/user/login.php)
 -   [ISPConfig Project Forums](http://www.howtoforge.com/forums/forumdisplay.php?f=33)
 
 When upstream sources offer new releases, repeat the instructions for installing the ISPConfig software as needed. These practices are crucial for the ongoing security and functioning of your system.

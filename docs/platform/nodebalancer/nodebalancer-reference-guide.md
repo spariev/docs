@@ -6,27 +6,24 @@ description: NodeBalancer Reference Guide
 keywords: 'load balancing,nodebalancer'
 license: '[CC BY-ND 3.0](http://creativecommons.org/licenses/by-nd/3.0/us/)'
 alias: ['nodebalancers/reference/']
-modified: Wednesday, March 26th, 2014
+modified: 'Friday, December 18th, 2015'
 modified_by:
-  name: Alex Fornuto
+  name: Linode
 published: 'Friday, July 8th, 2011'
 title: NodeBalancer Reference Guide
 ---
 
 This is the NodeBalancer reference guide. Please see the [NodeBalancer Getting Started Guide](/docs/platform/nodebalancer/getting-started-with-nodebalancers) for practical examples.
 
-Adding a NodeBalancer
----------------------
+## Adding a NodeBalancer
 
 Click the NodeBalancers tab, and then "Add a NodeBalancer". You must choose the same location as your back-end Linodes for a given deployment.
 
-NodeBalancer Settings
----------------------
+## NodeBalancer Settings
 
 Here you may adjust the NodeBalancer's display label, along with the 'Client Connection Throttle'. The connection throttle limits the number subsequent new connections from the same client IP address.
 
-Configuration
--------------
+## Configuration
 
 Each NodeBalancer config adds another port that the NodeBalancer will listen on. For instance, if you wish to balance both port 80 and 81, you'll need to add two configuration profiles to your NodeBalancer.
 
@@ -80,14 +77,30 @@ Copy your passphraseless private key into the **Private Key** field.
 
 You can [purchase an SSL certificate](/docs/security/ssl/obtaining-a-commercial-ssl-certificate) or [create your own](/docs/security/ssl/how-to-make-a-selfsigned-ssl-certificate).
 
-Health Checks
--------------
+### TLS Cipher Suites
+
+If your NodeBalancer must support users accessing your application with older browsers such as Internet Explorer 6-8, you should select the **Legacy** option, which sets the following cipher suite profile:
+
+	!RC4:HIGH:!aNULL:!MD5
+
+However, bear in mind that by gaining backwards compatibility, your NodeBalancer will use weaker SSL/TLS cipher suites. For all other implementations, the default **Recommended** cipher suite option should be used, which includes:
+
+	ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:AES:CAMELLIA:DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!aECDH:!EDH-DSS-DES-CBC3-SHA:!EDH-RSA-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA
+
+## Health Checks
 
 NodeBalancers perform both passive and active health checks against the backend nodes. Nodes that are no longer responding are taken out of rotation.
 
 ### Passive
 
 When servicing an incoming request, if a backend node fails to connect, times out, or returns a 5xx response code (excluding 501 and 505), it will be considered unhealthy and taken out of rotation.
+
+Passive health checks can be disabled if you choose:
+
+1.  From the Liode Manager, click the **NodeBalancers** tab.
+2.  Select your NodeBalancer and choose **Edit**.
+3.  Under the **Configurations** section at the top of the page, choose **Edit**.
+4.  Scroll down and uncheck the **Enabled** box under **Passive Checks**. Then click **Save Changes**.
 
 ### Active
 
@@ -103,8 +116,7 @@ Three different Health Check Type exist:
 -   **HTTP Valid Status** - performs an HTTP request on the provided path and requires a 2xx or 3xx response from the backend node.
 -   **HTTP Body Regex** - performs an HTTP request on the provided path and requires the provided PCRE regular expression matches against the request's result body.
 
-Nodes
------
+## Nodes
 
 NodeBalancers work over the private network. Backend nodes must have a private IP configured via [static networking](/docs/networking/configuring-static-ip-interfaces).
 
@@ -128,8 +140,7 @@ Changes to a Node's Mode are applied within 60 seconds.
 
 The use-case for Drain would be to set a node to Drain a day or so in advance of taking the node down. That way existing sessions would likely have ended.
 
-X-Forwarded-For Header
-----------------------
+## X-Forwarded-For Header
 
 NodeBalancers add an X-Forwarded-For (XFF) HTTP header field, which allows your nodes to identify a client's originating IP address. This is useful for logging purposes. Here's an example XFF HTTP header:
 
@@ -139,7 +150,7 @@ You'll need to configure your web server software to use the XFF header.
 
 ### Apache
 
-If you're using the Apache web server, you can use the [mod\_rpaf module](http://www.stderr.net/apache/rpaf/) to replace `REMOTE_ADDR` with the clent's IP address in the XFF header. After you install the module, you'll need to specify 192.168.255.0/24 as a proxy in `httpd.conf`.
+If you're using the Apache web server, you can use the mod_rpaf to replace `REMOTE_ADDR` with the clent's IP address in the XFF header. After you install the module, you'll need to specify 192.168.255.0/24 as a proxy in `httpd.conf`.
 
 ### Nginx
 
@@ -149,6 +160,3 @@ If you're using the Nginx web server, you can add the following lines to your Ng
     set_real_ip_from 192.168.255.0/24;
 
 This will allow Nginx to capture the client's IP address in the logs.
-
-
-

@@ -1,22 +1,21 @@
 ---
 author:
   name: Linode
-  email: skleinman@linode.com
+  email: docs@linode.com
 description: Use wget to download files on the command line
 keywords: 'wget,command line,linux common commands'
 license: '[CC BY-ND 3.0](http://creativecommons.org/licenses/by-nd/3.0/us/)'
 alias: ['linux-tools/common-commands/wget/']
 modified: Tuesday, May 17th, 2011
 modified_by:
-  name: Amanda Folson
+  name: Linode
 published: 'Monday, October 25th, 2010'
 title: Download Resources from the Command Line with wget
 ---
 
 `wget` is a powerful utility that retrieves files accessible as HTTP or FTP resources and saves them to the local file system. `wget` provides a number of options to allow users to configure how resources are downloaded and saved. It also features a recursive download function which allows you to download a set of linked resources for offline use.
 
-Using wget
-----------
+## Using wget
 
 The `wget` command takes one of the following forms:
 
@@ -27,8 +26,8 @@ When issued at the command line without options, `wget` will download the file s
 
     $ wget http://www.linode.com/docs/assets/695-wget-example.txt
     --2010-10-01 12:01:22--   http://www.linode.com/docs/assets/695-wget-example.txt
-    Resolving library.linode.com... 74.207.233.254
-    Connecting to library.linode.com|74.207.233.254|:80... connected.
+    Resolving linode.com/docs... 74.207.233.254
+    Connecting to linode.com/docs|74.207.233.254|:80... connected.
     HTTP request sent, awaiting response... 200 OK
     Length: 477 [text/plain]
     Saving to: `wget-example.txt'
@@ -51,8 +50,7 @@ When issued at the command line without options, `wget` will download the file s
 
 This document specifies all options for `wget` *before* the URL. However, `wget` accepts these options before *and* after the URL argument. Both forms are functionally equivalent.
 
-Examples
---------
+## Examples
 
 ### Download Content to Standard Output
 
@@ -76,8 +74,8 @@ To view the HTTP header information attached to the resource, use the `-S` flag.
 
     $ wget -S http://www.linode.com/docs/assets/695-wget-example.txt
     --2010-10-01 12:03:50--   http://www.linode.com/docs/assets/695-wget-example.txt
-    Resolving library.linode.com... 74.207.233.254
-    Connecting to library.linode.com|74.207.233.254|:80... connected.
+    Resolving linode.com/docs... 74.207.233.254
+    Connecting to linode.com/docs|74.207.233.254|:80... connected.
     HTTP request sent, awaiting response... 
       HTTP/1.1 200 OK
       Server: nginx
@@ -114,7 +112,7 @@ If you need to access a resource that requires HTTP authentication, use the foll
 
 In practice this may resemble:
 
-    wget --http-user=squire --http-password=iwLcis4TMOgn3PTy http://example.com/backups/database.1285770344
+    wget --http-user=username --http-password=iwLcis4TMOgn3PTy http://example.com/backups/database.1285770344
 
 `wget` will not send the authentication information unless prompted by the web server. Use the `--auth-no-challenge` option to force `wget` to send the authentication credentials under every circumstance.
 
@@ -152,8 +150,8 @@ Use the `-b` option to background the download process if you do not want `wget`
 
     $ cat wget-log
     --2010-10-01 12:06:55--  http://www.linode.com/docs/assets/695-wget-example.txt
-    Resolving library.linode.com... 74.207.233.254
-    Connecting to library.linode.com|74.207.233.254|:80... connected.
+    Resolving linode.com/docs... 74.207.233.254
+    Connecting to linode.com/docs|74.207.233.254|:80... connected.
     HTTP request sent, awaiting response... 200 OK
     Length: 477 [text/plain]
     Saving to: `wget-example.txt'
@@ -177,6 +175,3 @@ If you need to control how much bandwidth `wget` uses, you can specify a "rate l
     wget --limit-rate=3k http://example.com/releases/1285786486.tar.gz
 
 This command downloads the `1285786486.tar.gz` file with the operation limited to consume no more than 3 kilobytes a second. The method used to rate limit downloads is more effective for bigger files than for small downloads that complete rapidly.
-
-
-

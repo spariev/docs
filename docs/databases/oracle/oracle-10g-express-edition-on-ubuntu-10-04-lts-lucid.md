@@ -9,7 +9,7 @@ license: '[CC BY-ND 3.0](http://creativecommons.org/licenses/by-nd/3.0/us/)'
 alias: ['databases/oracle/10g-ubuntu-10-04-lucid/']
 modified: Wednesday, August 13, 2014
 modified_by:
-  name: Dave Russell Jr
+  name: Linode
 published: 'Wednesday, May 5th, 2010'
 title: 'Oracle 10g Express Edition on Ubuntu 10.04 LTS (Lucid)'
 ---
@@ -133,7 +133,7 @@ Connect to the Oracle XE Home Page
 
 Oracle is managed via a web interface, which is installed with the oracle-xe package. By default, it listens on the local address `127.0.0.1` at port 8080. Since you most likely do not have a window manager or web browser installed on your Linode, you must connect to your Oracle home page remotely.
 
-You can do this by using our [Oracle SSH tunnel script](/docs/databases/oracle/ssh-tunnel). After your tunnel is started, you can connect to the admin page at the URL "<http://127.0.0.1:8080/apex>". Log in with the username "SYSTEM" and the password you specified during Oracle configuration. You'll be presented with a page similar to this one:
+You can do this by using our [Oracle SSH tunnel script](/docs/databases/oracle/ssh-tunnel). After your tunnel is started, you can connect to the admin page at the URL `http://127.0.0.1:8080/apex`. Log in with the username "SYSTEM" and the password you specified during Oracle configuration. You'll be presented with a page similar to this one:
 
 [![The Oracle XE administration home page.](/docs/assets/381-oracle-xe-admin-page.png)](/docs/assets/381-oracle-xe-admin-page.png)
 
